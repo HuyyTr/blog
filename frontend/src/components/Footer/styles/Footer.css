@@ -1,0 +1,13 @@
+.footer {
+    left: 0;
+    width: 100%;
+    position: fixed,
+
+    left: 0,
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "#001529",
+    color: "#fff",
+    textAlign: "center",
+    height: "20px", // Đặt chiều cao của footer
+  }
