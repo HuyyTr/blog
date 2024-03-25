@@ -11,11 +11,12 @@ const Body = (props) => {
       if (typeof props.slug === "undefined") {
         entry_point = "post/";
       } else {
-        entry_point = "post/search/?slug=" + props.slug;
+        entry_point = "post/?slug=" + props.slug;
       }
       try {
         const result = await fetchData(entry_point);
-        setData(result);
+        console.log("data: ", result);
+        setData(result.results);
       } catch (error) {
         console.error("Error fetching data: ", error.message);
       }

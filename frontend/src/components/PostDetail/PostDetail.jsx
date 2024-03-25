@@ -8,6 +8,7 @@ const PostDetail = (props) => {
       <Link to={"/post/" + props.item.slug}>
         <img src={props.item.image} alt={"image" + props.index} />
       </Link>
+      <div dangerouslySetInnerHTML={{ __html: props.item.html_content }} />
       <div>{props.item.excerpt}</div>
     </div>
   );

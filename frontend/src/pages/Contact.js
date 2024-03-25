@@ -6,7 +6,7 @@ function Contact() {
   return (
     <div>
       <Header page="contact" />
-      <div>Contact Page</div>
+      <div style={{ marginTop: 50 }}>Contact Page</div>
       <Footer />
     </div>
   );

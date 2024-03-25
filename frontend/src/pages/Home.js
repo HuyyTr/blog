@@ -9,7 +9,7 @@ function Home() {
   return (
     <div>
       <Header page="home" />
-      <div>Home Page</div>
+      <div style={{ marginTop: 50 }}>Home Page</div>
       <Body slug={params.slug} />
       <Footer />
     </div>

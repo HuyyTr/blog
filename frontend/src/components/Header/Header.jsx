@@ -11,7 +11,7 @@ const menuItems = [
 
 function Header(props) {
   return (
-    <Layout>
+    <Layout style={HeaderStyle}>
       <Menu
         theme="dark"
         mode="horizontal"
@@ -26,5 +26,13 @@ function Header(props) {
     </Layout>
   );
 }
+
+const HeaderStyle = {
+  position: "fixed",
+  left: 0,
+  top: 0,
+  width: "100%",
+  z_index: 1000,
+};
 
 export default Header;

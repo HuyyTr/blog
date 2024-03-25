@@ -6,7 +6,7 @@ function About() {
   return (
     <div>
       <Header page="about" />
-      <div>About Page</div>
+      <div style={{ marginTop: 50 }}>About Page</div>
       <Footer />
     </div>
   );
