@@ -1,0 +1,131 @@
+version: "3.3"
+
+services:
+  django_gunicorn:
+    build: ./django
+    container_name: django_gunicorn
+    hostname: django_gunicorn
+    env_file:
+      - ./django/.env.prod
+    volumes:
+      - static:/static
+    ports:
+      - "8000:8000"
+    networks:
+      - shared_network
+    command: sh ./run_web.sh
+    depends_on:
+      - db
+      - redis
+      - rabbit
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  flask_gunicorn:
+    build: ./flask
+    container_name: flask_gunicorn
+    hostname: flask_gunicorn
+    env_file:
+      - ./flask/.env.prod
+    ports:
+      - "5000:5000"
+    networks:
+      - shared_network
+    command: sh ./run_web.sh
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  celery_worker:
+    build: ./django
+    container_name: celery_worker
+    hostname: celery_worker
+    env_file:
+      - ./django/.env.prod
+    networks:
+      - shared_network
+    command: sh ./run_worker.sh
+    depends_on:
+      - redis
+      - rabbit
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  celery_consumer:
+    build: ./django
+    container_name: celery_consumer
+    hostname: celery_consumer
+    env_file:
+      - ./django/.env.prod
+    networks:
+      - shared_network
+    command: sh ./run_consumer.sh
+    depends_on:
+      - rabbit
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  db:
+    image: postgres:16.2-alpine3.19
+    container_name: db
+    hostname: db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=blog_db
+    # ports:
+    #   - "5432:5432"
+    networks:
+      - shared_network
+    restart: unless-stopped
+
+  rabbit:
+    image: rabbitmq:3.13.1-management-alpine
+    container_name: rabbit
+    hostname: rabbit
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_VHOST=/
+    # ports:
+    #   - "5672:5672"
+    #   - "15672:15672"
+    networks:
+      - shared_network
+
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: redis
+    hostname: redis
+    # ports:
+    #   - "6379:6379"
+    networks:
+      - shared_network
+    restart: unless-stopped
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    hostname: nginx
+    volumes:
+      - static:/static
+    ports:
+      - "8080:80"
+    depends_on:
+      - django_gunicorn
+    networks:
+      - shared_network
+
+volumes:
+  static:
+  postgres_data:
+
+networks:
+  shared_network:
+    driver: bridge
